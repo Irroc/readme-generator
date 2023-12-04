@@ -1,6 +1,7 @@
-// TODO: Include packages needed for this application
 const inquirer = require('inquirer');
 const fs = require('fs');
+
+//both githubLicenseBadges and githubLicenses have corresponding index numbers to get the correct badge, dont change one without the same change to the other
 const githubLicenseBadges = ['[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)',
     '[![License](https://img.shields.io/badge/License-Boost_1.0-lightblue.svg)](https://www.boost.org/LICENSE_1_0.txt)',
     '[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)',
@@ -67,9 +68,11 @@ const githubLicenses = ['Apache 2.0 License',
     'WTFPL',
     'The zlib/libpng License',
     'No License']
-function badgeFunction(license){
-    return githubLicenseBadges[githubLicenses.indexOf(license)]}
-function tableOfContentsFunction(install, usage, credits, license, features, contribute, test) {
+
+function badgeFunction(license){//this pulls the correct badge from githubLicenseBadges using the githubLicenses's index
+    return githubLicenseBadges[githubLicenses.indexOf(license)]
+}
+function tableOfContentsFunction(install, usage, credits, license, features, contribute, test) {//this adds each section of the readme to the table of contents. it wont add optional section unluss the user has answered it accordingly 
     let ins = ''
     let usa = ''
     let cre = ''
@@ -78,7 +81,7 @@ function tableOfContentsFunction(install, usage, credits, license, features, con
     let con = ''
     let tes = ''
 
-    if (install !== '') {
+    if (install !== '') { //all the if statements are for the optional sections of the readme. if the input by the user was nothing it will not make a section for it. 
         ins = `- [Installation](#installation)\n`
     }
     if (usage !== '') {
@@ -87,7 +90,7 @@ function tableOfContentsFunction(install, usage, credits, license, features, con
     if (credits !== '') {
         cre = `- [Credits](#credits)\n`
     }
-    if (license !== '') {
+    if (license !== 'No License') {
         lic = `- [License](#license)\n`
     }
     if (features !== '') {
@@ -100,52 +103,53 @@ function tableOfContentsFunction(install, usage, credits, license, features, con
         tes = `- [Tests](#tests)\n`
     }
 
+
     return `## Table of Contents\n` + ins + usa + cre + lic + fea + con + tes + `- [Questions](#questions)\n`
 }
-function installationFunction(install) {
+function installationFunction(install) {//this only makes the installation section if the user has some input
     if (install !== '') {
         return `## Installation\n${install}\n`
     }
 }
-function usageFunction(usage) {
+function usageFunction(usage) {//this only makes the usage section if the user has some input
     if (usage !== '') {
         return `## Usage
         ${usage}\n`
     }
 }
-function creditsFunction(credits) {
+function creditsFunction(credits) {//this only makes the credits section if the user has some input
     if (credits !== '') {
         return `## Credits\n${credits}\n`
     }
 }
-function licenceFunction(license) {
-    if (license !== '') {
+function licenceFunction(license) {//this only makes the section license if they have selected anything but the NO License option
+    if (license !== 'No License') {
         return `## License\n This project is under ${license} license. Please respect the license that this project has.\n`
     }
 }
-function featuresFunction(features) {
+function featuresFunction(features) {//this only makes the features section if the user has some input
     if (features !== '') {
         return `## Features\n${features}\n`
     }
 }
-function contributeFunction(contribute) {
+function contributeFunction(contribute) {//this only makes the how to contribut section if the user has some input
     if (contribute !== '') {
         return `## How to Contribute\n${contribute}\n`
     }
 }
-function testsFunction(test) {
+function testsFunction(test) {//this only makes the test section if the user has some input
     if (test !== '') {
         return `## Tests\n${test}\n`
     }
 }
-function questionsFunction(github, email, instructions) {
+function questionsFunction(github, email, instructions) {//this makes the questions section no mater the users input
     return `## questions\n[${github}](https://github.com/${github})<br />\n${email}<br />\n${instructions}<br />\n`
 }
 
-const generateText = ({ title, description, install, usage, credits, license, features, contribute, test, github, email, instructions }) =>
-    `# ${title}` + badgeFunction(license) + 
-    `\n## Description\n${description}\n` +
-    tableOfContentsFunction(install, usage, credits, license, features, contribute, test, github, email, instructions) +
+const generateText = ({ title, description, install, usage, credits, license, features, contribute, test, github, email, instructions }) => //this puts all the pieces together to make the entire readme page
+    `# ${title}` + badgeFunction(license) + //this makes the title section no mater what but it can have no input and displays the license badge next to the title if the option was selected
+    `\n## Description\n${description}\n` + //this makes the description section no mater what but under can be empty if the user wants to write it later.
+    tableOfContentsFunction(install, usage, credits, license, features, contribute, test, github, email, instructions) +//the rest is the different pieces but put all the returned information togeter in propper syntax
     installationFunction(install) +
     usageFunction(usage) +
     creditsFunction(credits) +
@@ -155,11 +159,8 @@ const generateText = ({ title, description, install, usage, credits, license, fe
     testsFunction(test) +
     questionsFunction(github, email, instructions);
 
-
-
-// TODO: Create an array of questions for user input
 inquirer
-    .prompt([
+    .prompt([// this is the prompt with all the questionslisted after
         {
             message: 'What the title of your project?',
             name: 'title',
@@ -169,33 +170,33 @@ inquirer
             name: 'description',
         },
         {
-            message: 'Please list the steps requred to install your project if any.',
+            message: 'Please list the steps requred to install your project if any.(Optional)',
             name: 'install',
         },
         {
-            message: 'Please explain how to use your your project for the usage section.',
+            message: 'Please explain how to use your your project for the usage section.(Optional)',
             name: 'usage',
         },
         {
-            message: 'Please list any collaborators, third party assets used, or tutorials used for the credits section.',
+            message: 'Please list any collaborators, third party assets used, or tutorials used for the credits section.(Optional)',
             name: 'credits',
         },
         {
             type: 'list',
-            message: 'Please choose the license used for your project if any.',
-            choices: githubLicenses,
+            message: 'Please choose the license used for your project if any.(select No License to have no section in readme)',
+            choices: githubLicenses,//this calls the global array of licenses to be used as the multiple choice
             name: 'license',
         },
         {
-            message: 'Please provide a list of features if there are several of them in your project',
+            message: 'Please provide a list of features if there are several of them in your project.(Optional)',
             name: 'features',
         },
         {
-            message: 'Please explain how other can contribute to your project if others can.',
+            message: 'Please explain how other can contribute to your project if others can.(Optional)',
             name: 'contribute',
         },
         {
-            message: 'Please provide any tests your project may have here if any.',
+            message: 'Please provide any tests your project may have here if any.(Optional)',
             name: 'test',
         },
         {
@@ -211,14 +212,7 @@ inquirer
             name: 'instructions',
         },
     ])
-    .then((response) => {
+    .then((response) => {// this statement makes the readme file and calls the function to put all the user chosen pieces together in the readme
         generateREADME = generateText(response)
-        fs.writeFile('testREADME.md',
-            generateREADME, (error) =>
-            error ? console.error(error) : console.log('README file made!'))
+        fs.writeFile('testREADME.md', generateREADME, (error) => error ? console.error(error) : console.log('README file made!'))
     })
-// TODO: Create a function to write README file
-
-// TODO: Create a function to initialize app
-
-// Function call to initialize app
