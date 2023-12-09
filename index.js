@@ -109,45 +109,45 @@ function tableOfContentsFunction(install, usage, credits, license, features, con
 function installationFunction(install) {//this only makes the installation section if the user has some input
     if (install !== '') {
         return `## Installation\n${install}\n`
-    }
+    } else return `\n`
 }
 function usageFunction(usage) {//this only makes the usage section if the user has some input
     if (usage !== '') {
         return `## Usage
         ${usage}\n`
-    }
+    } else return `\n`
 }
 function creditsFunction(credits) {//this only makes the credits section if the user has some input
     if (credits !== '') {
-        return `## Credits\n${credits}\n`
-    }
+        return `## Credits \n ${credits} \n`
+    } else return `\n`
 }
 function licenceFunction(license) {//this only makes the section license if they have selected anything but the NO License option
     if (license !== 'No License') {
         return `## License\n This project is under ${license} license. Please respect the license that this project has.\n`
-    }
+    } else return `\n`
 }
 function featuresFunction(features) {//this only makes the features section if the user has some input
     if (features !== '') {
         return `## Features\n${features}\n`
-    }
+    } else return `\n`
 }
 function contributeFunction(contribute) {//this only makes the how to contribut section if the user has some input
     if (contribute !== '') {
         return `## How to Contribute\n${contribute}\n`
-    }
+    } else return `\n`
 }
 function testsFunction(test) {//this only makes the test section if the user has some input
     if (test !== '') {
         return `## Tests\n${test}\n`
-    }
+    } else return `\n`
 }
 function questionsFunction(github, email, instructions) {//this makes the questions section no mater the users input
-    return `## questions\n[${github}](https://github.com/${github})<br />\n${email}<br />\n${instructions}<br />\n`
+    return `## Questions\n[${github}](https://github.com/${github})<br />\n${email}<br />\n${instructions}<br />\n`
 }
 
 const generateText = ({ title, description, install, usage, credits, license, features, contribute, test, github, email, instructions }) => //this puts all the pieces together to make the entire readme page
-    `# ${title}` + badgeFunction(license) + //this makes the title section no mater what but it can have no input and displays the license badge next to the title if the option was selected
+    `# ${title} ` + badgeFunction(license) + //this makes the title section no mater what but it can have no input and displays the license badge next to the title if the option was selected
     `\n## Description\n${description}\n` + //this makes the description section no mater what but under can be empty if the user wants to write it later.
     tableOfContentsFunction(install, usage, credits, license, features, contribute, test, github, email, instructions) +//the rest is the different pieces but put all the returned information togeter in propper syntax
     installationFunction(install) +
@@ -162,7 +162,7 @@ const generateText = ({ title, description, install, usage, credits, license, fe
 inquirer
     .prompt([// this is the prompt with all the questionslisted after
         {
-            message: 'What the title of your project?',
+            message: 'What is the title of your project?',
             name: 'title',
         },
         {
@@ -170,37 +170,37 @@ inquirer
             name: 'description',
         },
         {
-            message: 'Please list the steps requred to install your project if any.(Optional)',
+            message: 'Please list the steps requred to install your project if any. (Optional)',
             name: 'install',
         },
         {
-            message: 'Please explain how to use your your project for the usage section.(Optional)',
+            message: 'Please explain to the user how to use your project. (Optional)',
             name: 'usage',
         },
         {
-            message: 'Please list any collaborators, third party assets used, or tutorials used for the credits section.(Optional)',
+            message: 'Please list any collaborators, third party assets used, or tutorials used for the credits section. (Optional)',
             name: 'credits',
         },
         {
             type: 'list',
-            message: 'Please choose the license used for your project if any.(select No License to have no section in readme)',
+            message: 'Please choose the license used for your project if any. (select No License to have no section in readme)',
             choices: githubLicenses,//this calls the global array of licenses to be used as the multiple choice
             name: 'license',
         },
         {
-            message: 'Please provide a list of features if there are several of them in your project.(Optional)',
+            message: 'Please provide a list of features if there are several of them in your project. (Optional)',
             name: 'features',
         },
         {
-            message: 'Please explain how other can contribute to your project if others can.(Optional)',
+            message: 'Please explain how others can contribute to your project if others can. (Optional)',
             name: 'contribute',
         },
         {
-            message: 'Please provide any tests your project may have here if any.(Optional)',
+            message: 'Please provide any tests your project may have here if any. (Optional)',
             name: 'test',
         },
         {
-            message: 'Please enter your github username for a link to you github on the questions page.',
+            message: 'Please enter your github username for a link to your github on the questions page.',
             name: 'github',
         },
         {
@@ -212,7 +212,7 @@ inquirer
             name: 'instructions',
         },
     ])
-    .then((response) => {// this statement makes the readme file and calls the function to put all the user chosen pieces together in the readme
+    .then((response) => {// this statement makes the readme file and calls the function to put all of the user chosen pieces together in the readme
         generateREADME = generateText(response)
-        fs.writeFile('testREADME.md', generateREADME, (error) => error ? console.error(error) : console.log('README file made!'))
+        fs.writeFile('generatedREADME.md', generateREADME, (error) => error ? console.error(error) : console.log('README file made!'))
     })
